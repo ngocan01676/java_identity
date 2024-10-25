@@ -4,6 +4,8 @@ import com.devteria.identity_service.dto.request.UserCreationRequest;
 import com.devteria.identity_service.dto.request.UserUpdateRequest;
 import com.devteria.identity_service.dto.response.UserResponse;
 import com.devteria.identity_service.entity.User;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
@@ -20,15 +22,15 @@ public class UserMapperImpl implements UserMapper {
             return null;
         }
 
-        User user = new User();
+        User.UserBuilder user = User.builder();
 
-        user.setUsername( userCreationRequest.getUsername() );
-        user.setPassword( userCreationRequest.getPassword() );
-        user.setFirstName( userCreationRequest.getFirstName() );
-        user.setLastName( userCreationRequest.getLastName() );
-        user.setDob( userCreationRequest.getDob() );
+        user.username( userCreationRequest.getUsername() );
+        user.password( userCreationRequest.getPassword() );
+        user.firstName( userCreationRequest.getFirstName() );
+        user.lastName( userCreationRequest.getLastName() );
+        user.dob( userCreationRequest.getDob() );
 
-        return user;
+        return user.build();
     }
 
     @Override
@@ -52,10 +54,14 @@ public class UserMapperImpl implements UserMapper {
         UserResponse.UserResponseBuilder userResponse = UserResponse.builder();
 
         userResponse.username( user.getUsername() );
-        userResponse.password( user.getPassword() );
+        userResponse.id( user.getId() );
         userResponse.firstName( user.getFirstName() );
         userResponse.lastName( user.getLastName() );
         userResponse.dob( user.getDob() );
+        Set<String> set = user.getRoles();
+        if ( set != null ) {
+            userResponse.roles( new LinkedHashSet<String>( set ) );
+        }
 
         return userResponse.build();
     }
